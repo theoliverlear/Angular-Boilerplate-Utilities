@@ -24,7 +24,7 @@ def inject_stylesheet_to_angular_json(root_directory, stylesheet_path):
                     print(f"Stylesheet already exists in project: {project_name}")
 
         with open(angular_json_path, 'w') as file:
-            json.dump(angular_data, file, indent=4)
+            json.dump(angular_data, file, indent=2)
         print("Updated angular.json successfully.")
     except FileNotFoundError:
         print(f"angular.json not found in {root_directory}")
@@ -46,7 +46,13 @@ def inject_component_to_file(root_directory,
             return
         with open(target_file_path, 'r') as file:
             lines = file.readlines()
+
         import_statement = f'import {{{pascal_case_name}Component}} from "./{component_name}/{typescript_file}";\n'
+        if len(import_statement.strip()) > 78:
+            import_statement = (
+                f'import {{\n    {pascal_case_name}Component\n}} '
+                f'from "./{component_name}/{typescript_file}";\n'
+            )
         component_entry = f"{pascal_case_name}Component"
         last_import_index = None
         for i, line in enumerate(lines):
