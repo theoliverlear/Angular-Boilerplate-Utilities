@@ -58,6 +58,8 @@ def inject_component_to_file(root_directory,
         for i, line in enumerate(lines):
             if line.strip().startswith("import "):
                 last_import_index = i
+                if not line.strip().endswith(";"):
+                    last_import_index += 2
         if last_import_index is None:
             raise ValueError("Could not locate import statements in the file.")
         if import_statement not in lines:
