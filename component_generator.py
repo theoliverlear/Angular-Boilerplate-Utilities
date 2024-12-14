@@ -75,7 +75,7 @@ export class {pascal_case_name}Component {{
     }}
 }}
 """
-        scss_content = f""" // {scss_component_name}
+        scss_content = f"""// {scss_component_name}
 @import "../../../styles/global-variables";
 @import "../../../styles/global-mixins";
 @import "../../../styles/global-functions";
