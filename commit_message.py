@@ -9,8 +9,8 @@ def generate_commit_message(file_name):
     elif file_name.endswith(".component.html"):
         name_partial = file_name.split(".component.html")[0]
         return f"Add {file_name} to be a template for the {name_partial} element in the Angular application"
-    elif file_name.endswith("-style.component.scss"):
-        name_partial = file_name.split("-style.component.scss")[0]
+    elif file_name.endswith(".component.scss"):
+        name_partial = file_name.split(".component.scss")[0]
         return f"Add {file_name} to style the {name_partial} element in the Angular application"
     else:
         return None
