@@ -57,8 +57,8 @@ def main():
         print(f"Created directory: {new_directory_path}")
         typescript_component_name = f"{file_name_partial}.component.ts"
         html_component_name = f"{file_name_partial}.component.html"
-        scss_component_name = f"{file_name_partial}-style.component.scss"
-        css_component_name = f"{file_name_partial}-style.component.css"
+        scss_component_name = f"{file_name_partial}.component.scss"
+        css_component_name = f"{file_name_partial}.component.css"
         html_content = f"<!-- {html_component_name} -->"
         pascal_case_name = to_pascal_case(file_name_partial)
         typescript_content = f"""// {typescript_component_name} 
