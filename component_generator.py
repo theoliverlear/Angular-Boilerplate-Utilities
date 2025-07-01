@@ -82,11 +82,17 @@ export class {pascal_case_name}Component {{
     }}
 }}
 """
+        relative_to = "elements" if "elements" in target_directory.lower() else "pages"
+        parts_after_relative = os.path.relpath(component_directory,
+                                               os.path.join(source_directory,
+                                                            relative_to)).split(os.sep)
+        num_levels = len(parts_after_relative[:-1]) - 4
+        additional_levels = "../" * num_levels
         scss_content = f"""// {scss_component_name}
-@import "../../../styles/global-variables";
-@import "../../../styles/global-mixins";
-@import "../../../styles/global-functions";
-@import "../../../styles/global-placeholders";
+@import "{additional_levels}../../../styles/global-variables";
+@import "{additional_levels}../../../styles/global-mixins";
+@import "{additional_levels}../../../styles/global-functions";
+@import "{additional_levels}../../../styles/global-placeholders";
 
 {file_name_partial} {{
     
