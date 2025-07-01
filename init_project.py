@@ -18,6 +18,8 @@ DIRECTORY_STRUCTURE = {
         "services/guard",
         "services/server",
         "services/websocket",
+        "services/http",
+        "server",
         "styles",
         "test"
     ]
