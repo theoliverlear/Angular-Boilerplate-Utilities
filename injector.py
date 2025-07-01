@@ -1,6 +1,17 @@
 import os
 import json
 
+def result_injection_directory(starting_directory):
+    current_directory = os.path.abspath(starting_directory)
+    while True:
+        if "elements" in os.listdir(current_directory) or "pages" in os.listdir(current_directory):
+            return current_directory
+        parent_directory = os.path.dirname(current_directory)
+        if current_directory == parent_directory:
+            raise FileNotFoundError("Neither 'elements' nor 'pages' directories were found in the project structure.")
+        current_directory = parent_directory
+
+
 def inject_stylesheet_to_angular_json(root_directory, stylesheet_path):
     angular_json_path = os.path.join(root_directory, 'angular.json')
     try:
@@ -10,11 +21,7 @@ def inject_stylesheet_to_angular_json(root_directory, stylesheet_path):
             styles_path = project_config.get('architect', {}).get('build', {}).get('options', {}).get('styles', [])
             if isinstance(styles_path, list):
                 relative_path = os.path.relpath(stylesheet_path, os.path.dirname(angular_json_path)).replace("\\", "/")
-                relative_path_parts = relative_path.split("angular")
-                relative_path = f"angular{relative_path_parts[-1]}"
-                if not relative_path.startswith("angular/"):
-                    print(f"Error: Path normalization failed for {stylesheet_path}. Skipping.")
-                    return
+                print(f"Relative path for stylesheet: {relative_path}")
                 if relative_path not in styles_path:
                     styles_path.append(relative_path)
                     styles_path.sort()
@@ -38,7 +45,8 @@ def inject_component_to_file(root_directory,
                              component_name,
                              pascal_case_name,
                              typescript_file,
-                             array_name):
+                             array_name,
+                             component_directory):
     target_file_path = os.path.join(root_directory, target_file)
     try:
         if not os.path.exists(target_file_path):
@@ -46,12 +54,15 @@ def inject_component_to_file(root_directory,
             return
         with open(target_file_path, 'r') as file:
             lines = file.readlines()
-
-        import_statement = f'import {{{pascal_case_name}Component}} from "./{component_name}/{typescript_file}";\n'
+        print(component_directory)
+        relative_import_path = component_directory.split(array_name)[1].replace('\\', '/')
+        print(f"Relative import path: {relative_import_path}")
+        relative_import_path = f".{relative_import_path}/{typescript_file}"
+        import_statement = f'import {{{pascal_case_name}Component}} from "{relative_import_path}";\n'
         if len(import_statement.strip()) > 78:
             import_statement = (
                 f'import {{\n    {pascal_case_name}Component\n}} '
-                f'from "./{component_name}/{typescript_file}";\n'
+                f'from "{relative_import_path}";\n'
             )
         component_entry = f"{pascal_case_name}Component"
         last_import_index = None
