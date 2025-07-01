@@ -1,11 +1,12 @@
 import os
 from tkinter import Tk, simpledialog, filedialog, font
 from config import detect_source_directory
-from injector import inject_stylesheet_to_angular_json, inject_component_to_file
+from injector import inject_stylesheet_to_angular_json, \
+    inject_component_to_file, result_injection_directory
 
 LAST_DIRECTORY_FILE = "last_directory.txt"
-ELEMENT_ARRAY_FILE_PATH = "angular/components/elements/elements.ts"
-PAGES_ARRAY_FILE_PATH = "angular/components/pages/pages.ts"
+ELEMENT_ARRAY_FILE_PATH = os.path.join("angular", "components", "elements", "elements.ts")
+PAGES_ARRAY_FILE_PATH = os.path.join("angular", "components", "pages", "pages.ts")
 
 def get_last_directory():
     if os.path.exists(LAST_DIRECTORY_FILE):
@@ -33,7 +34,6 @@ def main():
         root = Tk()
         root.withdraw()
         root.option_add("*Font", "Arial 14")
-        root.geometry("800x600")
         file_name_partial = simpledialog.askstring("Input",
                                                    "Enter the file name partial:")
         if not file_name_partial:
@@ -41,27 +41,34 @@ def main():
             return
         initial_directory = get_last_directory() or os.getcwd()
         print(f"Using initial directory: {initial_directory}")
-        target_directory = filedialog.askdirectory(title="Select Directory to Store New Component",
-                                                   initialdir=initial_directory)
+        target_directory = filedialog.askdirectory(
+            title="Select Directory to Store New Component",
+            initialdir=initial_directory)
         if not target_directory:
             print("No directory selected! Exiting.")
             return
         save_last_directory(target_directory)
-        source_directory = detect_source_directory(target_directory)
+        validated_directory = result_injection_directory(
+            target_directory)
+        print(f"Valid directory found: {validated_directory}")
+        source_directory = detect_source_directory(
+            os.path.abspath(validated_directory))
         if not source_directory:
-            print("Error: Could not detect source directory. Ensure the"
-                  " selected path is within a valid GitHub project.")
+            print(
+                "Error: Could not detect source directory. Ensure this is"
+                " a valid Angular project directory.")
             continue
-        new_directory_path = os.path.join(target_directory, file_name_partial)
-        os.makedirs(new_directory_path, exist_ok=True)
-        print(f"Created directory: {new_directory_path}")
+        component_directory = os.path.join(target_directory,
+                                           file_name_partial)
+        os.makedirs(component_directory, exist_ok=True)
+        print(f"Created directory: {component_directory}")
         typescript_component_name = f"{file_name_partial}.component.ts"
         html_component_name = f"{file_name_partial}.component.html"
         scss_component_name = f"{file_name_partial}.component.scss"
         css_component_name = f"{file_name_partial}.component.css"
         html_content = f"<!-- {html_component_name} -->"
         pascal_case_name = to_pascal_case(file_name_partial)
-        typescript_content = f"""// {typescript_component_name} 
+        typescript_content = f"""// {typescript_component_name}
 import {{ Component }} from "@angular/core";
 
 @Component({{
@@ -82,25 +89,36 @@ export class {pascal_case_name}Component {{
 @import "../../../styles/global-placeholders";
 
 {file_name_partial} {{
-
+    
 }}
 """
-        typescript_file_path = os.path.join(new_directory_path, typescript_component_name)
-        html_file_path = os.path.join(new_directory_path, html_component_name)
-        scss_file_path = os.path.join(new_directory_path, scss_component_name)
-        create_file(typescript_file_path, typescript_content)
-        create_file(html_file_path, html_content)
-        create_file(scss_file_path, scss_content)
+        create_file(
+            os.path.join(component_directory, typescript_component_name),
+            typescript_content)
+        create_file(os.path.join(component_directory, html_component_name),
+                    html_content)
+        create_file(os.path.join(component_directory, scss_component_name),
+                    scss_content)
         print("All files have been created successfully.")
-        stylesheet_relative_path = os.path.relpath(os.path.join(new_directory_path, css_component_name), source_directory).replace("\\", "/")
-        inject_stylesheet_to_angular_json(source_directory, stylesheet_relative_path)
-        typescript_file_without_ts = typescript_component_name.replace(".ts", "")
-        if "elements" in target_directory:
-            inject_component_to_file(source_directory, ELEMENT_ARRAY_FILE_PATH, file_name_partial, pascal_case_name,
-                                     typescript_file_without_ts, "elements")
-        elif "pages" in target_directory:
-            inject_component_to_file(source_directory, PAGES_ARRAY_FILE_PATH, file_name_partial, pascal_case_name,
-                                     typescript_file_without_ts, "pages")
+        stylesheet_relative_path = os.path.relpath(
+            os.path.join(component_directory, css_component_name),
+            source_directory
+        ).replace("\\", "/")
+        inject_stylesheet_to_angular_json(source_directory,
+                                          stylesheet_relative_path)
+        typescript_file_without_ts = typescript_component_name.replace(".ts",
+                                                                       "")
+        if "elements" in target_directory.lower():
+            inject_component_to_file(source_directory,
+                                     ELEMENT_ARRAY_FILE_PATH,
+                                     file_name_partial, pascal_case_name,
+                                     typescript_file_without_ts, "elements",
+                                     component_directory)
+        elif "pages" in target_directory.lower():
+            inject_component_to_file(source_directory, PAGES_ARRAY_FILE_PATH,
+                                     file_name_partial, pascal_case_name,
+                                     typescript_file_without_ts, "pages",
+                                     component_directory)
 
 if __name__ == "__main__":
     main()
