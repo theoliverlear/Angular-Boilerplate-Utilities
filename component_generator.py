@@ -88,7 +88,7 @@ export class {pascal_case_name}Component {{
         num_levels = len(parts_after_relative[:-1]) - 4
         additional_levels = "../" * num_levels
         scss_content = f"""// {scss_component_name}
-@use "{additional_levels}../../styles/globals" as *;
+@use "{additional_levels}../../../styles/globals" as *;
 
 {file_name_partial} {{
     
