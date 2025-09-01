@@ -13,6 +13,8 @@ def result_injection_directory(starting_directory):
 
 
 def inject_stylesheet_to_angular_json(root_directory, stylesheet_path):
+    stylesheet_path = stylesheet_path.replace('../Angular-Boilerplate-Utilities/', '')
+    stylesheet_path = stylesheet_path.replace("../", "")
     angular_json_path = os.path.join(root_directory, 'angular.json')
     try:
         with open(angular_json_path, 'r') as file:
@@ -21,6 +23,8 @@ def inject_stylesheet_to_angular_json(root_directory, stylesheet_path):
             styles_path = project_config.get('architect', {}).get('build', {}).get('options', {}).get('styles', [])
             if isinstance(styles_path, list):
                 relative_path = os.path.relpath(stylesheet_path, os.path.dirname(angular_json_path)).replace("\\", "/")
+                relative_path = relative_path.replace('../Angular-Boilerplate-Utilities/', '')
+                relative_path = relative_path.replace('../', '')
                 print(f"Relative path for stylesheet: {relative_path}")
                 if relative_path not in styles_path:
                     styles_path.append(relative_path)
