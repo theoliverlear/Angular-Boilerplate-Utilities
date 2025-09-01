@@ -26,16 +26,6 @@ jobs:
       packages: read
       pull-requests: read
     steps:
-      - name: Create temporary pom.xml
-        run: |
-          cat > pom.xml << 'EOF'
-          <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-            <modelVersion>4.0.0</modelVersion>
-            <groupId>com.sigwarthsoftware</groupId>
-            <artifactId>angular-boilerplate-utilities</artifactId>
-            <version>0.0.1</version>
-          </project>
-          EOF
       - name: Set up JDK and GitHub Packages for Maven
         uses: actions/setup-java@v4
         with:
