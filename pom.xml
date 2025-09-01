@@ -1,0 +1,54 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.sigwarthsoftware</groupId>
+    <artifactId>angular-boilerplate-utilities</artifactId>
+    <version>0.0.1</version>
+    <packaging>pom</packaging>
+    <name>Angular-Boilerplate-Utilities</name>
+    <url>https://github.com/theoliverlear/Angular-Boilerplate-Utilities</url>
+
+    <developers>
+        <developer>
+            <id>theoliverlear</id>
+            <name>Oliver Lear Sigwarth</name>
+            <email>sigwarthsoftware@gmail.com</email>
+            <organization>Sigwarth Software</organization>
+            <organizationUrl>https://github.com/theoliverlear</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:https://github.com/theoliverlear/Angular-Boilerplate-Utilities.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/theoliverlear/Angular-Boilerplate-Utilities.git</developerConnection>
+        <url>https://github.com/theoliverlear/Angular-Boilerplate-Utilities</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>23</java.version>
+        <maven.compiler.release>23</maven.compiler.release>
+    </properties>
+
+
+    <repositories>
+        <repository>
+            <id>central</id>
+            <url>https://repo.maven.apache.org/maven2/</url>
+        </repository>
+        <repository>
+            <id>gh-sigwarth-suite</id>
+            <name>GitHub Packages - Sigwarth-Software-Suite</name>
+            <url>https://maven.pkg.github.com/theoliverlear/Sigwarth-Software-Suite</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+</project>
