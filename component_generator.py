@@ -74,14 +74,13 @@ import {{ Component }} from "@angular/core";
 @Component({{
     selector: '{file_name_partial}',
     templateUrl: './{html_component_name}',
-    styleUrls: ['./{css_component_name}']
+    styleUrls: ['./{scss_component_name}']
 }})
 export class {pascal_case_name}Component {{
     constructor() {{
         
     }}
-}}
-"""
+}}"""
         relative_to = "elements" if "elements" in target_directory.lower() else "pages"
         parts_after_relative = os.path.relpath(component_directory,
                                                os.path.join(source_directory,
@@ -89,15 +88,11 @@ export class {pascal_case_name}Component {{
         num_levels = len(parts_after_relative[:-1]) - 4
         additional_levels = "../" * num_levels
         scss_content = f"""// {scss_component_name}
-@import "{additional_levels}../../../styles/global-variables";
-@import "{additional_levels}../../../styles/global-mixins";
-@import "{additional_levels}../../../styles/global-functions";
-@import "{additional_levels}../../../styles/global-placeholders";
+@use "{additional_levels}../../styles/globals" as *;
 
 {file_name_partial} {{
     
-}}
-"""
+}}"""
         create_file(
             os.path.join(component_directory, typescript_component_name),
             typescript_content)
@@ -107,7 +102,7 @@ export class {pascal_case_name}Component {{
                     scss_content)
         print("All files have been created successfully.")
         stylesheet_relative_path = os.path.relpath(
-            os.path.join(component_directory, css_component_name),
+            os.path.join(component_directory, scss_component_name),
             source_directory
         ).replace("\\", "/")
         inject_stylesheet_to_angular_json(source_directory,
